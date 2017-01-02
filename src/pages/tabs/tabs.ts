@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 
 import { RedditsPage } from '../reddits/reddits';
 import { AboutPage } from '../about/about';
+import { NlistPage } from '../nlist/nlist';
 import { SettingsPage } from '../settings/settings';
 
 @Component({
@@ -12,7 +13,8 @@ export class TabsPage {
   // should be each tab's root Page
   tab1Root: any = RedditsPage;
   tab2Root: any = SettingsPage;
-  tab3Root: any = AboutPage;
+  tab3Root: any = NlistPage;
+  tab4Root: any = AboutPage;
 
   constructor() {
 
