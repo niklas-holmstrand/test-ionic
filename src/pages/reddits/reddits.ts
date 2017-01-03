@@ -9,18 +9,18 @@ import {DetailsPage} from '../details/details';
 })
 export class RedditsPage {
   items: any;
-  category: any;
+  categoryNik: any;
   limit: any;
   constructor(public navCtrl: NavController, private redditService:RedditService) {
     this.getDefaults();
   }
 
   ngOnInit() {
-    this.getPosts(this.category, this.limit);
+    this.getPosts(this.categoryNik, this.limit);
   }
 
   getDefaults() {
-    this.category = "food";
+    this.categoryNik = "food";
     this.limit = 5;
   }
 
@@ -38,6 +38,6 @@ export class RedditsPage {
   }
 
   changeCategory() {
-    this.getPosts(this.category, this.limit);
+    this.getPosts(this.categoryNik, this.limit);
   }
 }
