@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import {NlistService} from '../../app/services/nlist.service';
 import { NavController } from 'ionic-angular';
+import { Device } from 'ionic-native';
+import { Geolocation } from 'ionic-native';
 
 @Component({
   selector: 'nlist',
@@ -10,9 +12,20 @@ import { NavController } from 'ionic-angular';
 export class NlistPage {
   items: any;
   newPost: any;
+  uuid: any;
+  latitude: any;
+  longitude: any;
 
   constructor(public navCtrl: NavController, private nlistService:NlistService) {
-    this.newPost = "(enter text)";
+//    this.newPost = "(enter text)";
+    this.uuid = Device.uuid;
+
+    Geolocation.getCurrentPosition().then((resp) => {
+      this.latitude = resp.coords.latitude;
+      this.longitude = resp.coords.longitude;
+    }).catch((error) => {
+      console.log('Error getting location', error);
+    });
   }
 
   ngOnInit() {
@@ -28,11 +41,15 @@ export class NlistPage {
       });
   }
 
-  addItem()  {
+
+ addItem()  {
       console.log("Add: " + this.newPost + "...");
 
+//	  alert("lat" + this.latitude);
+//	  alert("long" + this.longitude);
+//	  alert("uuid" + this.uuid);
 
-      this.nlistService.addPost(this.newPost).subscribe(response => {
+      this.nlistService.addPost(this.newPost, this.latitude, this.longitude, this.uuid).subscribe(response => {
         console.log("Add: ReGet to referesh list");
 
         console.log(" - - - ADD response - - -");
@@ -47,7 +64,7 @@ export class NlistPage {
   deleteItem(id)  {
 //      console.log("Delete:" + id + "...");
 
-      this.nlistService.deletePost(id).subscribe(response => {
+      this.nlistService.deletePost(id, this.uuid).subscribe(response => {
 //        console.log(" - - - Delete - - -");
 //        console.log(response);
 //        console.log(" - - - - - -");

@@ -20,11 +20,12 @@ export class NlistService{
       .map(res => res.json());
   }
 
-  deletePost(id) {
-    return this.http.get(this.baseUrl + "delete.php?id=" + id)
+  deletePost(id, uuid) {
+    return this.http.get(this.baseUrl + "delete.php?id=" + id +
+                           "&Deleter=" + uuid);
   }
 
-  addPost(newText) {
+  addPost(newText, latitude, longitude, uuid) {
 
 //    this.postData = {
 //      Message: newText
@@ -35,7 +36,10 @@ export class NlistService{
 //    console.log("---");
     
 
-    return this.http.get(this.baseUrl + "add-get.php?Message=" + newText);
+    return this.http.get(this.baseUrl + "add-get.php?Message=" + newText +
+                           "&Lat=" + latitude +
+                           "&Long=" + longitude +
+                           "&Creator=" + uuid);
   }
 
 
