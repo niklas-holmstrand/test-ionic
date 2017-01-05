@@ -13,6 +13,9 @@
     <ion-input type="text"  [(ngModel)]="newPost"></ion-input>
     <button ion-button clear item-right (click)="addItem()">Add</button>
   </ion-item>
+  <ion-item>
+    <button ion-button round (click)="scan()">Scan barcode and add to list</button>
+  </ion-item>
   <ion-list>
     <ion-item *ngFor="let item of items">
       <p>{{item.message}}</p>

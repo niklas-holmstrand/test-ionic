@@ -14,6 +14,7 @@ export class NlistService{
    
   }
 
+
   getPosts() {
     return this.http.get(this.baseUrl + "get-list-api.php")
 //      .map(res => res);
@@ -24,6 +25,7 @@ export class NlistService{
     return this.http.get(this.baseUrl + "delete.php?id=" + id +
                            "&Deleter=" + uuid);
   }
+
 
   addPost(newText, latitude, longitude, uuid) {
 

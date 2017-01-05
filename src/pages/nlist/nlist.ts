@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {NlistService} from '../../app/services/nlist.service';
 import { NavController } from 'ionic-angular';
 import { Device } from 'ionic-native';
+import { BarcodeScanner } from 'ionic-native';
 import { Geolocation } from 'ionic-native';
 
 @Component({
@@ -31,6 +32,20 @@ export class NlistPage {
   ngOnInit() {
     this.getPosts();
   }
+
+  scan() {
+    BarcodeScanner.scan().then((barcodeData) => {
+      alert("Scan ok");
+      alert(barcodeData.text);
+      this.newPost = "Scanned: " + barcodeData.text;
+      this.addItem();
+    }, (err) => {
+      alert("Scan err");
+      alert(err);
+    });
+  }
+
+
 
   getPosts (){
       this.nlistService.getPosts().subscribe(response => {
