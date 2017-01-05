@@ -21,12 +21,23 @@ export class NlistPage {
 //    this.newPost = "(enter text)";
     this.uuid = Device.uuid;
 
+/*
     Geolocation.getCurrentPosition().then((resp) => {
       this.latitude = resp.coords.latitude;
       this.longitude = resp.coords.longitude;
     }).catch((error) => {
       console.log('Error getting location', error);
     });
+*/
+
+    let watch = Geolocation.watchPosition();
+    watch.subscribe((data) => {
+        this.latitude = data.coords.latitude;
+        this.longitude = data.coords.longitude;
+
+        this.getPosts();  // Both to update vectors and poll for changed list
+    });
+
   }
 
   ngOnInit() {
@@ -35,10 +46,7 @@ export class NlistPage {
 
   scan() {
     BarcodeScanner.scan().then((barcodeData) => {
-      alert("Scan ok");
-      alert(barcodeData.text);
-      this.newPost = "Scanned: " + barcodeData.text;
-      this.addItem();
+      this.sendItem("Scanned: " + barcodeData.text);
     }, (err) => {
       alert("Scan err");
       alert(err);
@@ -47,24 +55,44 @@ export class NlistPage {
 
 
 
-  getPosts (){
-      this.nlistService.getPosts().subscribe(response => {
+  getPosts (){ 
+    this.nlistService.getPosts().subscribe(response => {
+
  //       console.log(" - - - - - -");
  //       console.log(response);
  //       console.log(" - - - - - -");
         this.items = response.children;
-      });
+
+      console.log("calc vec...");
+
+      
+      for(let item of this.items) {
+        var xd = (this.longitude - item.longitude) * 59000.0; // to meter E/W at ca 58 deg N
+        var yd = (this.latitude - item.latitude) * 111320.0;  // to meter N/S
+        var dist = Math.sqrt(xd **2 + yd **2);
+        var dir = Math.atan2(xd, yd) * 360 / (2 * Math.PI);
+        if (dir < 0) { dir = dir + 180; };
+
+//        console.log("dist0  " + item.latitude + " - " + item.longitude+ " xd " + xd);
+//        console.log("dist1  id:" + item.id + "dist:" + dist+ "dir:" + dir);
+
+        item.dist =  dist.toFixed(0);
+        item.dir = dir.toFixed(0);
+      };  
+
+    });
   }
 
 
- addItem()  {
-      console.log("Add: " + this.newPost + "...");
+  addItem()  {
+    this.sendItem(this.newPost);
+  }
+  
+  sendItem(newText)  {
+      console.log("Add: " + newText + "...");
 
-//	  alert("lat" + this.latitude);
-//	  alert("long" + this.longitude);
-//	  alert("uuid" + this.uuid);
 
-      this.nlistService.addPost(this.newPost, this.latitude, this.longitude, this.uuid).subscribe(response => {
+      this.nlistService.addPost(newText, this.latitude, this.longitude, this.uuid).subscribe(response => {
         console.log("Add: ReGet to referesh list");
 
         console.log(" - - - ADD response - - -");
@@ -77,14 +105,10 @@ export class NlistPage {
   }
 
   deleteItem(id)  {
-//      console.log("Delete:" + id + "...");
 
       this.nlistService.deletePost(id, this.uuid).subscribe(response => {
-//        console.log(" - - - Delete - - -");
-//        console.log(response);
-//        console.log(" - - - - - -");
-        console.log("ReGet to referesh list");
-        this.getPosts ();
+
+        this.getPosts (); // get the updated list from server
       });
 
   }

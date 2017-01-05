@@ -17,9 +17,10 @@
     <button ion-button round (click)="scan()">Scan barcode and add to list</button>
   </ion-item>
   <ion-list>
-    <ion-item *ngFor="let item of items">
+    <ion-item *ngFor="let item of items" text-wrap>
       <p>{{item.message}}</p>
       <p>({{item.id}}) -- {{item.time}}</p>
+      <p> Dist[m]: {{item.dist}}  Direction[deg] {{item.dir}}</p>
       <button ion-button clear item-right (click)="deleteItem(item.id)">Delete</button>
     </ion-item>
   </ion-list>
